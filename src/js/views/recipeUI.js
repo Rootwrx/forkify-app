@@ -1,5 +1,5 @@
 import icons from 'url:../../img/icons.svg';
-import { Fraction } from 'fractional';
+import Fraction from 'fractional';
 const recipeUI = data => {
   return `
         <figure class="recipe__fig">
@@ -70,7 +70,7 @@ const recipeUI = data => {
               <use href="${icons}#icon-check"></use>
             </svg>
            <div class="recipe__quantity">${
-             quantity ? new Fraction(quantity).toString() : ''
+             quantity ? new Fraction.Fraction(quantity).toString() : ''
            }</div>
             <div class="recipe__description">
               <span class="recipe__unit">${unit}</span>

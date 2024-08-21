@@ -23,6 +23,14 @@
   "homepage": "https://github.com/Rootwrx/forkify-app#readme",
   "devDependencies": {
     "@parcel/transformer-sass": "^2.12.0",
-    "parcel": "^2.12.0"
+    "buffer": "^6.0.3",
+    "events": "^3.3.0",
+    "parcel": "^2.12.0",
+    "process": "^0.11.10",
+    "stream-browserify": "^3.0.0",
+    "util": "^0.12.5"
+  },
+  "dependencies": {
+    "fractional": "^1.0.0"
   }
 }

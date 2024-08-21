@@ -11,7 +11,7 @@
     <link rel="shortcut icon" href="src/img/favicon.png" type="image/x-icon" />
 
     <link rel="stylesheet" href="src/sass/main.scss" />
-    <script defer src="src/js/controller.js"></script>
+    <script type="module" src="src/js/controller.js"></script>
 
     <title>forkify // Search over 1,000,000 recipes</title>
   </head>
@@ -25,6 +25,8 @@
             type="text"
             class="search__field"
             placeholder="Search over 1,000,000 recipes..."
+            required
+            minlength="3"
           />
           <button class="btn search__btn">
             <svg class="search__icon">
@@ -86,6 +88,9 @@
 
       <div class="search-results">
         <ul class="results">
+          <a href="#664c8f193e7aa067e94e836b">Recipe 1</a>
+          <a href="#664c8f193e7aa067e94e86af">Recipe 3</a>
+          <a href="#664c8f193e7aa067e94e84de">Recipe 2</a>
           <!-- 
           <li class="preview">
             <a class="preview__link preview__link--active" href="#23456">

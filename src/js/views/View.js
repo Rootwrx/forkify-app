@@ -1,12 +1,13 @@
 import icons from '../../img/icons.svg';
-import recipeUI from './recipeUI';
 
 class View {
   _data;
 
   render(data) {
+    if (!data || (Array.isArray(data) && data.length == 0))
+      return this.renderError();
     this._data = data;
-    const markUp = recipeUI({ ...this._data });
+    const markUp = this._generateMarkUp();
     this.clear();
     this._parentElement.insertAdjacentHTML('afterbegin', markUp);
   }

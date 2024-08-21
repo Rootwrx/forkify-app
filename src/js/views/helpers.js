@@ -30,4 +30,7 @@ const getRecipeInfo = recipe => ({
   ingredients: recipe.ingredients,
   cookingTime: recipe.cooking_time,
 });
+
+
+
 export { getJson, getRecipeInfo };

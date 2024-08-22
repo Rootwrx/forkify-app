@@ -1,61 +1,111 @@
-import 'core-js/stable';
-import recipeView from './views/recipeView';
+// Import polyfills and runtime
+import "regenerator-runtime/runtime.js";
+import "core-js/stable";
+
+// Import views
+import RecipeView from "./views/recipeView";
+import SearchView from "./views/searchView";
+import ResultsView from "./views/resultsView";
+import PaginationView from "./views/paginationView";
+
+// Import model functions
 import {
   state,
   loadRecipe,
   loadSearchResults,
   getSearchResultsPage,
-} from './model';
-import searchView from './views/searchView';
-import resultsView from './views/resultsView';
-import paginationView from './views/paginationView';
+  updateRecipe,
+} from "./model";
 
-if (module.hot) module.hot.accept();
+// Import utility functions
+import { getUrlSearchParam } from "./utils/helpers";
+import { logger } from "./utils/logger";
 
-const controlRecipe = async () => {
-  try {
-    const id = location.hash.slice(1);
-    if (!id) return;
-    // loading a spinner from the "View" model
-    recipeView.renderspinner();
-    // sending request to the server  and storing given data in model'state
-    await loadRecipe(id);
-    //  Rendering Results  after successfully  getting data
-    recipeView.render(state.recipe);
-  } catch (_) {
-    recipeView.renderError();
-    console.log(_);
+// Enable hot module replacement if available
+if (module.hot) {
+  module.hot.accept();
+}
+
+class Controller {
+  constructor() {
+    this.recipeView = RecipeView;
+    this.searchView = SearchView;
+    this.resultsView = ResultsView;
+    this.paginationView = PaginationView;
+
+    this.init();
   }
-};
 
-const controlSearch = async _ => {
-  try {
-    resultsView.renderspinner();
-    const searchQuery = searchView.getQuery();
-
-    if (!searchQuery.trim())
-      throw new Error('Please enter a valid search query');
-    // await for the server th send back search results
-    await loadSearchResults(searchQuery);
-    resultsView.render(getSearchResultsPage(1));
-    paginationView.render(state.search);
-  } catch (err) {
-    resultsView.renderError(err);
-    console.log(err);
+  init() {
+    this.recipeView.addHandlerRender(this.controlRecipe.bind(this));
+    this.searchView.addHandlerSearch(this.controlSearch.bind(this));
+    this.paginationView.addHandlerClick(this.controlPagination.bind(this));
+    this.recipeView.addHandlerServings(this.controlServings.bind(this));
+    this.initialLoad();
   }
-};
 
-const controlPagination = page => {
-  resultsView.render(getSearchResultsPage(page));
+ 
+  async controlRecipe() {
+    try {
+      const id = location.hash.slice(1);
+      if (!id) return;
 
-  paginationView.render(state.search);
-};
-const init = () => {
-  // using Publisher - Subscriber  design patter to pass 'controlRecipe' to the View (RecipeView) ;
-  recipeView.addHandlerRender(controlRecipe);
-  searchView.addHandlerSearch(controlSearch);
-  paginationView.addHandlerClick(controlPagination);
-  // controlSearch(STARTUP_QUERY);
-};
+      this.recipeView.renderSpinner();
 
-init();
+      await loadRecipe(id);
+      this.recipeView.render(state.recipe);
+    } catch (error) {
+      this.recipeView.renderError();
+      logger.error("Error in controlRecipe:", error);
+    }
+  }
+
+  initialLoad() {
+    const query = getUrlSearchParam();
+    if (query) {
+      this.searchView.setQuery(query);
+      this.controlSearch(query);
+    }
+    if (location.hash) {
+      this.controlRecipe();
+    }
+  }
+  async controlSearch(q) {
+    try {
+      let query = q || this.searchView.getQuery();
+      query;
+
+      if (!query?.trim())
+        throw new Error("No search query provided by user or URL");
+
+      this.resultsView.renderSpinner();
+
+      history.pushState(
+        null,
+        "",
+        `?search=${encodeURIComponent(query)}${location.hash}`
+      );
+      await loadSearchResults(query);
+
+      this.resultsView.render(getSearchResultsPage());
+      this.paginationView.render(state.search);
+      return query;
+    } catch (error) {
+      this.resultsView.renderError();
+      logger.error("Error in controlSearch:", error);
+    }
+  }
+
+  controlPagination(page) {
+    this.resultsView.renderSpinner();
+    this.resultsView.render(getSearchResultsPage(page));
+    this.paginationView.render(state.search);
+  }
+
+  controlServings(newServings) {
+    updateRecipe(newServings);
+    this.recipeView.update(state.recipe);
+  }
+}
+
+new Controller();

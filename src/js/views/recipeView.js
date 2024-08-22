@@ -1,10 +1,22 @@
-import View from './View';
-import icons from '../../img/icons.svg';
-import Fraction from 'fractional';
+import View from "./View";
+import icons from "../../img/icons.svg";
+import Fraction from "fractional";
 class RecipeView extends View {
-  _parentElement = document.querySelector('.recipe');
-  _errorMessage = 'No recipes found for your query. Please try again!';
-  _succesMessage = '';
+  _parentElement = document.querySelector(".recipe");
+  _oldDom = this._parentElement.cloneNode(true);
+  _errorMessage = "No recipes found for your query. Please try again!";
+  _succesMessage = "";
+
+  addHandlerServings(handler) {
+    this._parentElement.addEventListener("click", function (e) {
+      const btn = e.target.closest(".btn--tiny");
+      if (!btn) return;
+
+      const servings = +btn.dataset.servings;
+      if (servings < 1) return;
+      handler(servings);
+    });
+  }
 
   _generateMarkUp() {
     return `
@@ -35,12 +47,16 @@ class RecipeView extends View {
             <span class="recipe__info-text">servings</span>
 
             <div class="recipe__info-buttons">
-              <button class="btn--tiny btn--increase-servings">
+              <button  data-servings="${
+                this._data.servings - 1
+              }" class="btn--tiny btn--increase-servings">
                 <svg>
                   <use href="${icons}#icon-minus-circle"></use>
                 </svg>
               </button>
-              <button class="btn--tiny btn--increase-servings">
+              <button data-servings="${
+                this._data.servings + 1
+              }" class="btn--tiny btn--increase-servings">
                 <svg>
                   <use href="${icons}#icon-plus-circle"></use>
                 </svg>
@@ -73,7 +89,7 @@ class RecipeView extends View {
               <use href="${icons}#icon-check"></use>
             </svg>
            <div class="recipe__quantity">${
-             quantity ? new Fraction.Fraction(quantity).toString() : ''
+             quantity ? new Fraction.Fraction(quantity).toString() : ""
            }</div>
             <div class="recipe__description">
               <span class="recipe__unit">${unit}</span>
@@ -81,7 +97,7 @@ class RecipeView extends View {
             </div>
           </li>`
             )
-            .join('')}
+            .join("")}
 
           </ul>
         </div>
@@ -109,9 +125,7 @@ class RecipeView extends View {
     `;
   }
   addHandlerRender(handler) {
-    ['hashchange', 'DOMContentLoaded'].forEach(event =>
-      window.addEventListener(event, handler)
-    );
+    ["hashchange"].forEach((event) => window.addEventListener(event, handler));
   }
 }
 

@@ -1,13 +1,15 @@
-import View from './View';
+import View from "./View";
 
 class ResutlsView extends View {
-  _parentElement = document.querySelector('.results');
-  _errorMessage = 'No recipe Found for you query ';
+  _parentElement = document.querySelector(".results");
+  _errorMessage = "No recipe Found for you query ";
+
+ 
 
   _generateMarkUp() {
     return this._data
       .map(
-        el => `
+        (el) => `
         <li class="preview loader">
             <a class="preview__link" href="#${el.id}">
               <figure class="preview__fig">
@@ -23,7 +25,7 @@ class ResutlsView extends View {
           </li>
       `
       )
-      .join('');
+      .join("");
   }
 }
 

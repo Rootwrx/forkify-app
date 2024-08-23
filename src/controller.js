@@ -1,7 +1,3 @@
-// Import polyfills and runtime
-import "regenerator-runtime/runtime.js";
-import "core-js/stable";
-
 // Import views
 import RecipeView from "./views/recipeView";
 import SearchView from "./views/searchView";
@@ -23,9 +19,9 @@ import { getUrlSearchParam } from "./utils/helpers";
 import { logger } from "./utils/logger";
 
 // Enable hot module replacement if available
-if (module.hot) {
-  module.hot.accept();
-}
+// if (module.hot) {
+//   module.hot.accept();
+// }
 
 class Controller {
   constructor() {
@@ -52,8 +48,12 @@ class Controller {
 
       this.recipeView.renderSpinner();
 
+      
       await loadRecipe(id);
       this.recipeView.render(state.recipe);
+      // this.resultsView.update(getSearchResultsPage());
+
+
       this.loadPage(true);
     } catch (error) {
       this.recipeView.renderError();
@@ -102,8 +102,8 @@ class Controller {
       );
       await loadSearchResults(query);
 
-      // this.resultsView.render(getSearchResultsPage());
-      // this.paginationView.render(state.search);
+      this.resultsView.render(getSearchResultsPage());
+      this.paginationView.render(state.search);
 
       this.loadPage();
 
@@ -126,4 +126,4 @@ class Controller {
   }
 }
 
-new Controller();
+export default Controller;

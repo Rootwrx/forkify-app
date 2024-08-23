@@ -1,6 +1,5 @@
 import View from "./View";
-import icons from "../../img/icons.svg";
-import Fraction from "fractional";
+import fracty from "fracty";
 class RecipeView extends View {
   _parentElement = document.querySelector(".recipe");
   _oldDom = this._parentElement.cloneNode(true);
@@ -30,7 +29,7 @@ class RecipeView extends View {
         <div class="recipe__details">
           <div class="recipe__info">
             <svg class="recipe__info-icon">
-              <use href="${icons}#icon-clock"></use>
+              <use xlink:href="icons.svg#icon-clock"></use>
             </svg>
             <span class="recipe__info-data recipe__info-data--minutes">${
               this._data.cookingTime
@@ -39,7 +38,7 @@ class RecipeView extends View {
           </div>
           <div class="recipe__info">
             <svg class="recipe__info-icon">
-              <use href="${icons}#icon-users"></use>
+              <use xlink:href="icons.svg#icon-users"></use>
             </svg>
             <span class="recipe__info-data recipe__info-data--people">${
               this._data.servings
@@ -51,14 +50,14 @@ class RecipeView extends View {
                 this._data.servings - 1
               }" class="btn--tiny btn--increase-servings">
                 <svg>
-                  <use href="${icons}#icon-minus-circle"></use>
+                  <use xlink:href="icons.svg#icon-minus-circle"></use>
                 </svg>
               </button>
               <button data-servings="${
                 this._data.servings + 1
               }" class="btn--tiny btn--increase-servings">
                 <svg>
-                  <use href="${icons}#icon-plus-circle"></use>
+                  <use xlink:href="icons.svg#icon-plus-circle"></use>
                 </svg>
               </button>
             </div>
@@ -66,12 +65,12 @@ class RecipeView extends View {
 
           <div class="recipe__user-generated">
             <svg>
-              <use href="${icons}#icon-user"></use>
+              <use xlink:href="icons.svg#icon-user"></use>
             </svg>
           </div>
           <button class="btn--round">
             <svg class="">
-              <use href="${icons}#icon-bookmark-fill"></use>
+              <use xlink:href="icons.svg#icon-bookmark-fill"></use>
             </svg>
           </button>
         </div>
@@ -86,10 +85,10 @@ class RecipeView extends View {
                 `
           <li class="recipe__ingredient">
             <svg class="recipe__icon">
-              <use href="${icons}#icon-check"></use>
+              <use xlink:href="icons.svg#icon-check"></use>
             </svg>
            <div class="recipe__quantity">${
-             quantity ? new Fraction.Fraction(quantity).toString() : ""
+             quantity ? fracty(quantity) : ""
            }</div>
             <div class="recipe__description">
               <span class="recipe__unit">${unit}</span>
@@ -118,7 +117,7 @@ class RecipeView extends View {
           >
             <span>Directions</span>
             <svg class="search__icon">
-              <use href="${icons}#icon-arrow-right"></use>
+              <use xlink:href="icons.svg#icon-arrow-right"></use>
             </svg>
           </a>
         </div>

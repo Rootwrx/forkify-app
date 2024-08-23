@@ -39,8 +39,18 @@ const updateRecipe = (newServings) => {
   recipe.servings = newServings;
 };
 
+ const getCorrectPage = ()=> {
+    const index = state.search.results.findIndex(
+      (el) => el.id == location.hash.slice(1)
+    );
+
+    if (index == -1) return;
+    const page = Math.max(Math.ceil((index + 1) / state.search.resultsPerPage));
+    state.search.page = page;
+  }
+
 const getSearchResultsPage = (pageNumber = state.search.page) => {
-  const start = (pageNumber - 1) * state.search.resultsPerPage;
+  let start = (pageNumber - 1) * state.search.resultsPerPage;
   const end = start + state.search.resultsPerPage;
   state.search.page = pageNumber;
   return state.search.results.slice(start, end);
@@ -52,4 +62,5 @@ export {
   loadSearchResults,
   updateRecipe,
   getSearchResultsPage,
+  getCorrectPage
 };

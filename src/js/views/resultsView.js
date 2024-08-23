@@ -4,13 +4,11 @@ class ResutlsView extends View {
   _parentElement = document.querySelector(".results");
   _errorMessage = "No recipe Found for you query ";
 
- 
-
   _generateMarkUp() {
     return this._data
       .map(
         (el) => `
-        <li class="preview loader">
+        <li class="preview ${el.id == location.hash.slice(1) ? "active" : ""}">
             <a class="preview__link" href="#${el.id}">
               <figure class="preview__fig">
                 <img src="${el.image}" alt="Test" />

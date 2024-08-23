@@ -15,6 +15,7 @@ import {
   loadSearchResults,
   getSearchResultsPage,
   updateRecipe,
+  getCorrectPage,
 } from "./model";
 
 // Import utility functions
@@ -44,7 +45,6 @@ class Controller {
     this.initialLoad();
   }
 
- 
   async controlRecipe() {
     try {
       const id = location.hash.slice(1);
@@ -54,10 +54,25 @@ class Controller {
 
       await loadRecipe(id);
       this.recipeView.render(state.recipe);
+      this.loadPage(true);
     } catch (error) {
       this.recipeView.renderError();
       logger.error("Error in controlRecipe:", error);
     }
+  }
+
+  // //? why this function
+  // //* i want when the page reload with a hash of a recipe to  to get the page where the 'preview' element is !
+
+  loadPage(update) {
+    getCorrectPage();
+    if (update) {
+      this.paginationView.update(state.search);
+      this.resultsView.update(getSearchResultsPage(state.search.page));
+      return;
+    }
+    this.paginationView.render(state.search);
+    this.resultsView.render(getSearchResultsPage(state.search.page));
   }
 
   initialLoad() {
@@ -87,8 +102,11 @@ class Controller {
       );
       await loadSearchResults(query);
 
-      this.resultsView.render(getSearchResultsPage());
-      this.paginationView.render(state.search);
+      // this.resultsView.render(getSearchResultsPage());
+      // this.paginationView.render(state.search);
+
+      this.loadPage();
+
       return query;
     } catch (error) {
       this.resultsView.renderError();

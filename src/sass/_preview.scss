@@ -1,4 +1,8 @@
 .preview {
+  &.active {
+    background-color: $color-grey-light-1;
+  }
+
   &__link {
     &:link,
     &:visited {
@@ -14,10 +18,6 @@
       background-color: $color-grey-light-1;
       transform: translateY(-2px);
     }
-
-    &--active {
-      background-color: $color-grey-light-1;
-    }
   }
 
   &__fig {
@@ -30,7 +30,7 @@
     backface-visibility: hidden;
 
     &::before {
-      content: '';
+      content: "";
       display: block;
       height: 100%;
       width: 100%;

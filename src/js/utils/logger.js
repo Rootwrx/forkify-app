@@ -12,11 +12,11 @@ class Logger {
 
   static log(level, message, ...args) {
     if (level <= Logger.level) {
-      const timestamp = new Date().toISOString();
+     
       const levelName = Object.keys(Logger.levels).find(
         (key) => Logger.levels[key] === level
       );
-      console.log(`[${timestamp}] [${levelName}] ${message}`, ...args);
+      console.log(`[${levelName}] ${message}`, ...args);
     }
   }
 

@@ -1,5 +1,5 @@
 import icons from "../../img/icons.svg";
-import { updateDOM } from "../utils/helpers";
+import { updateDOM } from "../utils/domUpdater";
 
 class View {
   _data;
@@ -30,30 +30,26 @@ class View {
   }
 
   update(data) {
-    if (!data || (Array.isArray(data) && data.length == 0)) {
-      return this.renderError();
-    }
-
     this._data = data;
     const newMarkup = this._generateMarkUp();
     const newDom = document.createRange().createContextualFragment(newMarkup);
-
     const curElements = Array.from(this._parentElement.querySelectorAll("*"));
     const newElements = Array.from(newDom.querySelectorAll("*"));
 
     newElements.forEach((newEl, i) => {
       const curEl = curElements[i];
+      if (!curEl) return;
 
-      // Update text content if nodes are equal and text content differs
-      if (
-        !newEl.isEqualNode(curEl) &&
-        newEl?.firstChild?.nodeValue.trim() !== ""
-      ) {
+      // Update text content only if it differs and is not empty
+      const newTextContent = newEl?.firstChild?.nodeValue?.trim();
+      const curTextContent = curEl?.firstChild?.nodeValue?.trim();
+      if (newTextContent && newTextContent !== curTextContent) {
         curEl.textContent = newEl.textContent;
       }
-
+      
       // Update attributes if they differ
-      if (curEl.hasAttributes() || newEl.hasAttributes()) {
+      if (!newEl.isEqualNode(curEl)) {
+        // Update or add new attributes
         Array.from(newEl.attributes).forEach((attr) => {
           if (curEl.getAttribute(attr.name) !== attr.value) {
             curEl.setAttribute(attr.name, attr.value);
@@ -84,6 +80,9 @@ class View {
     this.clear();
     this._parentElement.insertAdjacentHTML("afterbegin", markUp);
   }
+
+ 
+  
 }
 
 export default View;

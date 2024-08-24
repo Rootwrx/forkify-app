@@ -1,3 +1,4 @@
+import { debounce } from "../utils/helpers";
 import View from "./View";
 
 class SearchView extends View {
@@ -15,12 +16,26 @@ class SearchView extends View {
   _clear() {
     this._input.value = "";
   }
+  // addHandlerSearch(handler) {
+  //   this._parentElement.addEventListener("submit", (e) => {
+  //     e.preventDefault();
+  //     handler();
+  //     this._clear();
+  //   });
+  // }
   addHandlerSearch(handler) {
+    const debouncedHandler = debounce(() => {
+      handler();
+    }, 500); // 300ms delay
+
     this._parentElement.addEventListener("submit", (e) => {
       e.preventDefault();
       handler();
       this._clear();
     });
+
+
+   
   }
 }
 

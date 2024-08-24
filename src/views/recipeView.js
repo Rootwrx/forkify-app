@@ -16,6 +16,14 @@ class RecipeView extends View {
       handler(servings);
     });
   }
+  addHandlerBookMark(hanlder) {
+    this._parentElement.addEventListener("click", (e) => {
+      const target = e.target;
+
+      if (!target.closest(".btn-bookmark")) return;
+      hanlder();
+    });
+  }
 
   _generateMarkUp() {
     return `
@@ -63,14 +71,16 @@ class RecipeView extends View {
             </div>
           </div>
 
-          <div class="recipe__user-generated">
+          <div class="recipe__user-generated ${this._data.key ?  '':'hidden'}">
             <svg>
               <use xlink:href="icons.svg#icon-user"></use>
             </svg>
           </div>
-          <button class="btn--round">
-            <svg class="">
-              <use xlink:href="icons.svg#icon-bookmark-fill"></use>
+          <button class="btn--round btn-bookmark">
+            <svg>
+              <use xlink:href="icons.svg#icon-bookmark${
+                this._data.bookmarked ? "-fill" : ""
+              }"></use>
             </svg>
           </button>
         </div>

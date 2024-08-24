@@ -9,9 +9,19 @@ const timeout = (s) =>
     )
   );
 
-const getJson = async (url) => {
+const Ajax = async (url, uploadData = undefined) => {
   try {
-    const res = await Promise.race([timeout(TIMEOUT_SEC), fetch(url)]);
+    const fetchPro = uploadData
+      ? fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(uploadData),
+        })
+      : fetch(url);
+
+    const res = await Promise.race([timeout(TIMEOUT_SEC), fetchPro]);
     const data = await res.json();
     if (!res.ok) throw new Error(`${data.message} ${res.status}`);
     return data;
@@ -29,6 +39,7 @@ const getRecipeInfo = (recipe) => ({
   servings: recipe.servings,
   ingredients: recipe.ingredients,
   cookingTime: recipe.cooking_time,
+  ...(recipe.key && { key: recipe.key }),
 });
 
 const getUrlSearchParam = (query) => {
@@ -42,71 +53,12 @@ const getUrlSearchParam = (query) => {
   return url.searchParams.get("search");
 };
 
-function updateDOM(oldNode, newNode) {
-  // Case 1: Nodes are the same type
-  if (oldNode.nodeType === newNode.nodeType) {
-    // Update text content if they are text nodes
-    if (oldNode.nodeType === Node.TEXT_NODE) {
-      if (oldNode.textContent !== newNode.textContent) {
-        oldNode.textContent = newNode.textContent;
-      }
-    }
-
-    // Update element nodes
-    if (oldNode.nodeType === Node.ELEMENT_NODE) {
-      // Update attributes
-      updateAttributes(oldNode, newNode);
-
-      // Recursive update of child nodes
-      updateChildren(oldNode, newNode);
-    }
-  } else {
-    // Case 2: Nodes are different types, replace the old node with the new node
-    oldNode.replaceWith(newNode.cloneNode(true));
-  }
+function debounce(func, delay) {
+  let timeoutId;
+  return function (...args) {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => func.apply(this, args), delay);
+  };
 }
 
-function updateAttributes(oldNode, newNode) {
-  // Remove old attributes not present in newNode
-  Array.from(oldNode.attributes).forEach((attr) => {
-    if (!newNode.hasAttribute(attr.name)) {
-      oldNode.removeAttribute(attr.name);
-    }
-  });
-
-  // Update existing attributes and add new ones
-  Array.from(newNode.attributes).forEach((attr) => {
-    if (oldNode.getAttribute(attr.name) !== attr.value) {
-      oldNode.setAttribute(attr.name, attr.value);
-    }
-  });
-}
-
-function updateChildren(oldNode, newNode) {
-  const oldChildren = Array.from(oldNode.childNodes);
-  const newChildren = Array.from(newNode.childNodes);
-
-  const maxLength = Math.max(oldChildren.length, newChildren.length);
-
-  for (let i = 0; i < maxLength; i++) {
-    if (!oldChildren[i]) {
-      // Case 3: New node has more children, append the new child
-      oldNode.appendChild(newChildren[i].cloneNode(true));
-    } else if (!newChildren[i]) {
-      // Case 4: Old node has more children, remove the excess child
-      oldNode.removeChild(oldChildren[i]);
-    } else {
-      // Case 5: Update existing child nodes
-      updateDOM(oldChildren[i], newChildren[i]);
-    }
-  }
-}
-
-// // Usage example:
-// const oldDom = document.getElementById('oldTree');
-// const newDom = document.getElementById('newTree');
-
-// // Apply changes from newDom to oldDom
-// updateDOM(oldDom, newDom);
-
-export { getJson, getRecipeInfo, updateDOM, getUrlSearchParam };
+export { Ajax, getRecipeInfo, getUrlSearchParam, debounce };

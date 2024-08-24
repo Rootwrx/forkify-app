@@ -8,6 +8,21 @@
     "build": "vite build",
     "preview": "vite preview"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Rootwrx/forkify-app.git"
+  },
+  "keywords": [
+    "RecipeApp",
+    "Js modules",
+    "Asynchrounos Js"
+  ],
+  "author": "Smail Ettanjaoui",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Rootwrx/forkify-app/issues"
+  },
+  "homepage": "https://github.com/Rootwrx/forkify-app#readme",
   "devDependencies": {
     "vite": "^5.4.1"
   },
